@@ -26,6 +26,7 @@ Focus: Mentioning of past experiences, RRK and Why Factor?
 * Tell me about your past experiences? (Prepare 1 Agentic Model & 1 Classical ML Example)
 * 30 - 45 mins where you should ask questions more around the Team and the recruiter too
 * What are you pursuing outside of work?
+* End-To-End Interview Process takes 6-8 Weeks including self-preparation
 
 ---
 
@@ -95,19 +96,17 @@ Focus: Designing intelligent, scalable systems with ML components.
 
 ## 📅 How to Use this Repo:
 
-A structured timeline for covering all topics:
+A structured way to cover all topics and be confident in the interview:
 
-* Week 1–2: DSA fundamentals + problem patterns
-* Week 3: Advanced DSA + mock interviews
-* Week 4: Vibe coding + system design basics
-* Week 5: ML design + agentic systems
-* Week 6: Googleyness + full mock loops
+* Understand various **DSA Python Patterns** using the _python_dsa_patterns.ipynb_ notebook - 80% of DSA is covered there
+* Understand how **Agentic System Design** is built using the _ml_agentic_systems_guide_ attached
+* Practise the **Problem Set** using the _dsa_problem_set_ file
 
 ---
 
 ## 🛠️ Tools & Resources
 
-* Coding platforms (e.g., LeetCode, HackerRank)
+* Coding platforms (NeetCode - It will cost you $100 but definitely worth it)
 * System design references
 * ML papers and blogs
 * Mock interview platforms
