@@ -2,6 +2,12 @@
 ## Google Forward Deployed Engineer - Applied AI
 ## Staff-Level AI-First Engineering Assessment
 
+## Related Obsidian Links
+
+- [[README]]
+- [[ml_agentic_systems_guide]]
+- [[coding_section_cheatsheet]]
+
 ---
 
 # PART 1: UNDERSTANDING THE PARADIGM SHIFT

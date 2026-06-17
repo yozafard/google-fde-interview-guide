@@ -4,6 +4,14 @@ This guide explains the main DSA topics in beginner-friendly language. Use it be
 
 For problem-by-problem LeetCode notes and runnable solutions from `dsa_problem_set.md`, use `leetcode_problem_set_solutions.ipynb`.
 
+## Related Obsidian Links
+
+- [[README]]
+- [[coding_section_cheatsheet]]
+- [[dsa_problem_set]]
+- [[leetcode_problem_set_solutions]]
+- [[python_dsa_patterns]]
+
 ## How To Use These Notes
 
 Do not try to memorise every solution line by line. Most interview problems are variations of a few ideas. Your job is to recognise which idea the problem is asking for.

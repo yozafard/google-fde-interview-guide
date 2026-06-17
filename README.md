@@ -36,8 +36,10 @@ Focus: Problem-solving under constraints, code efficiency, and clarity.
 
 **Contents:**
 
-* Core topics (arrays, trees, graphs, DP, etc.)
-* Practice problems with solutions
+* Core topics (arrays, trees, graphs, DP, etc.) in [[python_dsa_patterns_explained]]
+* Practice problems in [[dsa_problem_set]]
+* Runnable LeetCode solutions in [[leetcode_problem_set_solutions]]
+* Fast pattern review in [[coding_section_cheatsheet]]
 * Patterns and heuristics
 * Time/space complexity breakdowns
 * Mock interview notes
@@ -52,7 +54,7 @@ Focus: Real-world coding in a collaborative, fast-paced environment.
 
 **Contents:**
 
-* End-to-end coding exercises
+* End-to-end coding exercises in [[vibe_coding_mastery_guide]]
 * Code readability and structure
 * Debugging strategies
 * Working with ambiguous requirements
@@ -84,7 +86,7 @@ Focus: Designing intelligent, scalable systems with ML components.
 
 **Contents:**
 
-* System design fundamentals
+* System design fundamentals in [[ml_agentic_systems_guide]]
 * ML system architecture
 * Agent-based workflows
 * Trade-offs and scalability considerations
@@ -98,9 +100,12 @@ Focus: Designing intelligent, scalable systems with ML components.
 
 A structured way to cover all topics and be confident in the interview:
 
-* Understand various **DSA Python Patterns** using the _python_dsa_patterns.ipynb_ notebook - 80% of DSA is covered there
-* Understand how **Agentic System Design** is built using the _ml_agentic_systems_guide_ attached
-* Practise the **Problem Set** using the _dsa_problem_set_ file
+* Understand various **DSA Python Patterns** using [[python_dsa_patterns_explained]] and [[python_dsa_patterns]] - 80% of DSA is covered there
+* Use [[coding_section_cheatsheet]] for last-minute live coding review
+* Practise the **Problem Set** using [[dsa_problem_set]]
+* Check runnable LeetCode solutions in [[leetcode_problem_set_solutions]]
+* Understand how **Agentic System Design** is built using [[ml_agentic_systems_guide]]
+* Prepare practical AI-first coding scenarios with [[vibe_coding_mastery_guide]]
 
 ---
 

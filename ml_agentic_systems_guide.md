@@ -2,6 +2,12 @@
 ## Google Forward Deployed Engineer - Applied AI
 ## Quick Reference Guide
 
+## Related Obsidian Links
+
+- [[README]]
+- [[vibe_coding_mastery_guide]]
+- [[python_dsa_patterns_explained]]
+
 ---
 
 # THE 5 PILLARS

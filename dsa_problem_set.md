@@ -2,6 +2,14 @@
 ## Forward Deployed Engineer - Applied AI
 ## 25-Day Study Plan:
 
+## Related Obsidian Links
+
+- [[README]]
+- [[python_dsa_patterns_explained]]
+- [[coding_section_cheatsheet]]
+- [[leetcode_problem_set_solutions]]
+- [[python_dsa_patterns]]
+
 ---
 
 # WEEK 1: FOUNDATIONS

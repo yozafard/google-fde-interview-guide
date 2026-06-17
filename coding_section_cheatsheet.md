@@ -2,6 +2,14 @@
 
 Use this as a one-page reference before mock interviews and live coding rounds. The goal is not to memorise every line, but to quickly recognise the pattern, state the trade-off, and code a clean first solution.
 
+## Related Obsidian Links
+
+- [[README]]
+- [[python_dsa_patterns_explained]]
+- [[dsa_problem_set]]
+- [[leetcode_problem_set_solutions]]
+- [[python_dsa_patterns]]
+
 ## Interview Flow
 
 1. Clarify input, output, constraints, duplicates, sorting, mutability, and edge cases.
