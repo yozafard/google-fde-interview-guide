@@ -1,8 +1,978 @@
-# Python DSA Patterns Explained for Beginners
+# Python DSA Study Notes
 
-This guide explains the patterns in `python_dsa_patterns.ipynb` in beginner-friendly language. Use it before or alongside the notebook: read the idea first, then study the code template, then solve one or two problems using that template.
+This guide explains the main DSA topics in beginner-friendly language. Use it before or alongside `python_dsa_patterns.ipynb`: read the idea first, study the code shape, then solve one or two problems using that pattern.
 
 For problem-by-problem LeetCode notes and runnable solutions from `dsa_problem_set.md`, use `leetcode_problem_set_solutions.ipynb`.
+
+## How To Use These Notes
+
+Do not try to memorise every solution line by line. Most interview problems are variations of a few ideas. Your job is to recognise which idea the problem is asking for.
+
+For each topic, learn five things:
+
+1. What the topic is really about.
+2. What clues in the question point to this topic.
+3. What data structure or pointer setup you need.
+4. What stays true while the algorithm runs.
+5. What edge cases usually break beginner solutions.
+
+When you practise, explain the solution out loud before coding. If you cannot explain the idea simply, you probably do not understand the code yet.
+
+## Topic 1: Arrays, Strings, Hash Maps, and Sets
+
+### Core Concepts
+
+Arrays and strings are ordered collections. You can scan them from left to right, compare neighbors, slice them, or use indexes to remember positions.
+
+Hash maps and sets are memory tools:
+
+- A dictionary answers: "What value is connected to this key?"
+- A set answers: "Have I seen this item before?"
+- A counter answers: "How many times did this item appear?"
+
+These tools often turn a slow nested-loop solution into a one-pass solution.
+
+### Explain It Like I'm 12
+
+Imagine you are walking through a row of cards. If you need to remember cards you already saw, use a set. If you need to remember extra information about each card, like where it appeared or how many times it appeared, use a dictionary.
+
+### Tiny Example
+
+Question: Find two numbers that add to `9`.
+
+```python
+nums = [2, 7, 11, 15]
+target = 9
+```
+
+At `2`, you need `7`, but you have not seen it yet. Store `2`.
+
+At `7`, you need `2`, and `2` is already stored. The answer is the indexes of `2` and `7`.
+
+### Code Patterns To Memorise
+
+Seen set:
+
+```python
+seen = set()
+for x in nums:
+    if x in seen:
+        return True
+    seen.add(x)
+return False
+```
+
+Index map:
+
+```python
+seen = {}
+for i, x in enumerate(nums):
+    if target - x in seen:
+        return [seen[target - x], i]
+    seen[x] = i
+```
+
+Frequency count:
+
+```python
+from collections import Counter
+
+counts = Counter(s)
+```
+
+### Common Mistakes
+
+- Using a list for repeated membership checks when a set would be faster.
+- Forgetting that dictionary keys must be hashable.
+- Counting values when you only need existence.
+- Returning the value instead of the index in problems like Two Sum.
+- Forgetting edge cases like empty input, duplicate values, and case sensitivity in strings.
+
+### Problems To Practise
+
+- Two Sum
+- Contains Duplicate
+- Valid Anagram
+- Group Anagrams
+- Top K Frequent Elements
+
+### What To Say In An Interview
+
+"The brute force way compares each item with many other items. I can avoid that by storing useful information as I scan. The hash map or set lets me answer the lookup question in constant time on average."
+
+## Topic 2: Two Pointers
+
+### Core Concepts
+
+Two pointers means using two indexes or references to move through data. The pointers usually do one of three jobs:
+
+- Shrink from both ends.
+- Chase each other through a list.
+- Read from one position and write to another.
+
+Two pointers works well when order matters and each pointer movement lets you safely ignore part of the search space.
+
+### Explain It Like I'm 12
+
+Imagine using two fingers on a word or list. Sometimes one finger starts at the beginning and the other starts at the end. You move the fingers inward until they meet. Other times one finger reads every item while the other finger writes only the good items.
+
+### Tiny Example
+
+Question: Is `"racecar"` a palindrome?
+
+```text
+r a c e c a r
+^           ^
+left      right
+```
+
+Compare the outside letters. Both are `r`, so move inward. Then compare `a` and `a`, then `c` and `c`. If all pairs match, it is a palindrome.
+
+### Code Patterns To Memorise
+
+Opposite-end pointers:
+
+```python
+left = 0
+right = len(nums) - 1
+
+while left < right:
+    if nums[left] + nums[right] == target:
+        return [left, right]
+    if nums[left] + nums[right] < target:
+        left += 1
+    else:
+        right -= 1
+```
+
+Read/write pointers:
+
+```python
+write = 0
+for read in range(len(nums)):
+    if should_keep(nums[read]):
+        nums[write] = nums[read]
+        write += 1
+return write
+```
+
+### Common Mistakes
+
+- Moving both pointers when only one should move.
+- Forgetting that sorted input is often what makes two pointers valid.
+- Returning the modified list when the question asks for a length.
+- Losing data during in-place edits because the write pointer is wrong.
+
+### Problems To Practise
+
+- Valid Palindrome
+- Two Sum II
+- 3Sum
+- Container With Most Water
+- Remove Duplicates from Sorted Array
+
+### What To Say In An Interview
+
+"I am using two pointers because the input order gives me information. Each move removes options that cannot produce a better answer, so I do not need to check every pair."
+
+## Topic 3: Sliding Window
+
+### Core Concepts
+
+Sliding window is a two-pointer pattern for continuous chunks of an array or string. The window starts at `left` and ends at `right`.
+
+There are two common types:
+
+- Fixed window: the window size is always `k`.
+- Variable window: the window grows and shrinks based on a rule.
+
+The key question is: "What makes the current window valid?"
+
+### Explain It Like I'm 12
+
+Imagine putting a ruler over part of a word. The right side of the ruler moves forward to include more letters. If the ruler covers something bad, like a repeated letter, the left side moves forward until the ruler is okay again.
+
+### Tiny Example
+
+Question: Longest substring without repeating characters.
+
+```text
+s = "abcabcbb"
+```
+
+The window grows:
+
+```text
+"a" -> "ab" -> "abc"
+```
+
+The next letter is `a`, which repeats inside the window. Move the left side past the old `a`:
+
+```text
+"bca"
+```
+
+Keep doing this and remember the biggest valid window.
+
+### Code Patterns To Memorise
+
+Variable window:
+
+```python
+left = 0
+answer = 0
+window = {}
+
+for right, value in enumerate(nums):
+    # Add value to the window here.
+
+    while window_is_invalid:
+        # Remove nums[left] from the window here.
+        left += 1
+
+    answer = max(answer, right - left + 1)
+```
+
+Last-seen jump for strings:
+
+```python
+last = {}
+left = 0
+best = 0
+
+for right, ch in enumerate(s):
+    if ch in last and last[ch] >= left:
+        left = last[ch] + 1
+    last[ch] = right
+    best = max(best, right - left + 1)
+```
+
+### Common Mistakes
+
+- Using sliding window for subsequences. Sliding window is for contiguous chunks.
+- Moving `left` backward. `left` should only move forward.
+- Forgetting to update the answer after the window becomes valid.
+- Counting duplicates but not removing them when `left` moves.
+
+### Problems To Practise
+
+- Best Time to Buy and Sell Stock
+- Longest Substring Without Repeating Characters
+- Longest Repeating Character Replacement
+- Minimum Window Substring
+- Sliding Window Maximum
+
+### What To Say In An Interview
+
+"The answer is a contiguous part of the input, so I will keep a window. I expand with the right pointer, and whenever the window breaks the rule, I move the left pointer until it is valid again."
+
+## Topic 4: Stack and Queue
+
+### Core Concepts
+
+A stack is last-in, first-out. The last thing added is the first thing removed.
+
+A queue is first-in, first-out. The oldest thing added is the first thing removed.
+
+Use a stack when you care about the most recent unresolved item. Use a queue when you need to process items in the order they arrived.
+
+### Explain It Like I'm 12
+
+A stack is like a pile of plates. You take the top plate first. A queue is like a line at a store. The person who arrived first gets helped first.
+
+### Tiny Example
+
+Question: Valid parentheses.
+
+```text
+s = "({})"
+```
+
+When you see `(` or `{`, put it on the stack. When you see `}`, the top of the stack must be `{`. When you see `)`, the top must be `(`. If the stack is empty at the end, everything matched.
+
+### Code Patterns To Memorise
+
+Stack matching:
+
+```python
+stack = []
+pairs = {")": "(", "]": "[", "}": "{"}
+
+for ch in s:
+    if ch in pairs.values():
+        stack.append(ch)
+    elif ch in pairs:
+        if not stack or stack.pop() != pairs[ch]:
+            return False
+
+return not stack
+```
+
+Queue BFS:
+
+```python
+from collections import deque
+
+queue = deque([start])
+visited = {start}
+
+while queue:
+    node = queue.popleft()
+    for nei in neighbors(node):
+        if nei not in visited:
+            visited.add(nei)
+            queue.append(nei)
+```
+
+### Common Mistakes
+
+- Using a queue when the most recent item matters.
+- Forgetting to check whether the stack is empty before popping.
+- Returning true before confirming the stack is empty.
+- Using `list.pop(0)` for queues, which is slow; use `deque`.
+
+### Problems To Practise
+
+- Valid Parentheses
+- Min Stack
+- Evaluate Reverse Polish Notation
+- Daily Temperatures
+- Binary Tree Level Order Traversal
+
+### What To Say In An Interview
+
+"A stack fits because I need to resolve the most recent open item first. A queue fits because I need to process items in arrival order or level order."
+
+## Topic 5: Binary Search
+
+### Core Concepts
+
+Binary search cuts the search space in half. It works when the values are sorted or when the possible answers have an ordered yes/no pattern.
+
+The key idea is not just "sorted array." The key idea is an ordered question:
+
+> If this candidate works, do all bigger candidates also work?
+
+or:
+
+> If this candidate is too small, can I ignore everything smaller?
+
+### Explain It Like I'm 12
+
+Imagine guessing a number between 1 and 100. If you guess 50 and someone says "too high," you do not need to try 51 through 100. You throw away half the choices.
+
+### Tiny Example
+
+Question: Find `7` in `[1, 3, 5, 7, 9]`.
+
+The middle is `5`. Since `7` is bigger, ignore the left half. Now search `[7, 9]`. The middle is `7`, so you found it.
+
+### Code Patterns To Memorise
+
+Standard search:
+
+```python
+left = 0
+right = len(nums) - 1
+
+while left <= right:
+    mid = (left + right) // 2
+    if nums[mid] == target:
+        return mid
+    if nums[mid] < target:
+        left = mid + 1
+    else:
+        right = mid - 1
+
+return -1
+```
+
+Search for first valid answer:
+
+```python
+left = min_answer
+right = max_answer
+
+while left < right:
+    mid = (left + right) // 2
+    if works(mid):
+        right = mid
+    else:
+        left = mid + 1
+
+return left
+```
+
+### Common Mistakes
+
+- Infinite loops from not moving `left` or `right`.
+- Mixing up `while left < right` and `while left <= right`.
+- Forgetting that binary search can be used on answer ranges, not just arrays.
+- Not defining what `works(mid)` means before coding.
+
+### Problems To Practise
+
+- Binary Search
+- Search Insert Position
+- Find First and Last Position
+- Search in Rotated Sorted Array
+- Koko Eating Bananas
+
+### What To Say In An Interview
+
+"I can binary search because the search space is ordered. At each midpoint, the result tells me which half cannot contain the answer."
+
+## Topic 6: Linked Lists
+
+### Core Concepts
+
+Linked lists are chains of nodes. Each node points to the next node. You cannot jump to index `i` quickly like in an array; you must walk node by node.
+
+Most linked list problems are about changing `.next` safely.
+
+### Explain It Like I'm 12
+
+Think of a treasure hunt where each clue points to the next clue. If you want to reverse the hunt, you must carefully turn each arrow around without losing the next clue.
+
+### Tiny Example
+
+Reverse:
+
+```text
+1 -> 2 -> 3 -> None
+```
+
+At node `1`, save `2` first. Then point `1` backward to `None`. Move forward to `2`. Repeat until all arrows are reversed.
+
+### Code Patterns To Memorise
+
+Reverse a linked list:
+
+```python
+prev = None
+curr = head
+
+while curr:
+    nxt = curr.next
+    curr.next = prev
+    prev = curr
+    curr = nxt
+
+return prev
+```
+
+Fast and slow pointers:
+
+```python
+slow = head
+fast = head
+
+while fast and fast.next:
+    slow = slow.next
+    fast = fast.next.next
+```
+
+### Common Mistakes
+
+- Changing `curr.next` before saving the original next node.
+- Forgetting dummy nodes for removal or merge problems.
+- Not handling empty lists or one-node lists.
+- Losing the head of the final list.
+
+### Problems To Practise
+
+- Reverse Linked List
+- Merge Two Sorted Lists
+- Linked List Cycle
+- Remove Nth Node From End
+- Reorder List
+
+### What To Say In An Interview
+
+"Because this is a linked list, I cannot rely on indexes. I will move node references carefully and save the next node before changing any pointer."
+
+## Topic 7: Trees
+
+### Core Concepts
+
+Trees are nodes with children. A binary tree node has at most two children: left and right.
+
+Most tree problems use DFS, BFS, or recursion:
+
+- DFS goes deep before coming back.
+- BFS goes level by level.
+- Recursion asks each child for information, then combines the answers.
+
+### Explain It Like I'm 12
+
+Imagine a family tree. To answer a question about the whole family, you can ask each child branch the same question, then combine their answers at the parent.
+
+### Tiny Example
+
+Maximum depth:
+
+```text
+    1
+   / \
+  2   3
+ /
+4
+```
+
+Node `4` has depth `1`. Node `2` has depth `2` because it is one level above `4`. Root `1` has depth `3`.
+
+### Code Patterns To Memorise
+
+DFS recursion:
+
+```python
+def dfs(node):
+    if not node:
+        return base_value
+
+    left = dfs(node.left)
+    right = dfs(node.right)
+    return combine(node.val, left, right)
+```
+
+BFS level order:
+
+```python
+from collections import deque
+
+queue = deque([root])
+while queue:
+    for _ in range(len(queue)):
+        node = queue.popleft()
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+```
+
+### Common Mistakes
+
+- Forgetting the `None` base case.
+- Mixing up height and depth.
+- Assuming a binary tree is a BST when the question only says binary tree.
+- Forgetting that BST inorder traversal gives sorted values.
+
+### Problems To Practise
+
+- Maximum Depth of Binary Tree
+- Invert Binary Tree
+- Same Tree
+- Binary Tree Level Order Traversal
+- Validate Binary Search Tree
+- Lowest Common Ancestor
+
+### What To Say In An Interview
+
+"This is a tree problem, so I will define what each node returns to its parent. Once that return value is clear, the recursion becomes much easier."
+
+## Topic 8: Graphs
+
+### Core Concepts
+
+Graphs are nodes connected by edges. Unlike trees, graphs can have cycles, disconnected parts, and many possible paths.
+
+Almost every graph problem needs:
+
+- A way to get neighbors.
+- A `visited` set.
+- BFS, DFS, topological sort, or union find.
+
+### Explain It Like I'm 12
+
+Think of cities connected by roads. From one city, you can travel to neighboring cities. You need a notebook of visited cities so you do not drive in circles forever.
+
+### Tiny Example
+
+Number of Islands:
+
+```text
+1 1 0
+0 1 0
+1 0 1
+```
+
+When you find land, explore all land connected to it. Mark it visited. That whole connected group is one island.
+
+### Code Patterns To Memorise
+
+DFS graph traversal:
+
+```python
+def dfs(node):
+    if node in visited:
+        return
+    visited.add(node)
+    for nei in graph[node]:
+        dfs(nei)
+```
+
+BFS shortest path:
+
+```python
+queue = deque([(start, 0)])
+visited = {start}
+
+while queue:
+    node, dist = queue.popleft()
+    if node == target:
+        return dist
+    for nei in graph[node]:
+        if nei not in visited:
+            visited.add(nei)
+            queue.append((nei, dist + 1))
+```
+
+### Common Mistakes
+
+- Forgetting `visited`, causing infinite loops.
+- Marking nodes visited too late in BFS.
+- Treating a graph like a tree.
+- Missing disconnected components because you only start from one node.
+
+### Problems To Practise
+
+- Number of Islands
+- Clone Graph
+- Course Schedule
+- Course Schedule II
+- Number of Connected Components
+- Word Ladder
+
+### What To Say In An Interview
+
+"This is a graph because the problem is about connections. I need to define the neighbors and track visited nodes so I do not repeat work or loop forever."
+
+## Topic 9: Heaps and Priority Queues
+
+### Core Concepts
+
+A heap gives quick access to the smallest item. Python's `heapq` is a min-heap. To simulate a max-heap, store negative values.
+
+Use a heap when you repeatedly need the smallest, largest, closest, or top `k` items.
+
+### Explain It Like I'm 12
+
+Imagine a magic bag where the smallest item always comes out first. You do not need to fully sort the bag every time.
+
+### Tiny Example
+
+Question: Find the 3 largest numbers.
+
+Keep a small heap of size 3. Add numbers one by one. If the heap grows bigger than 3, remove the smallest. At the end, the heap contains the 3 biggest numbers.
+
+### Code Patterns To Memorise
+
+Top `k` with min-heap:
+
+```python
+import heapq
+
+heap = []
+for x in nums:
+    heapq.heappush(heap, x)
+    if len(heap) > k:
+        heapq.heappop(heap)
+```
+
+Max-heap simulation:
+
+```python
+heapq.heappush(heap, -value)
+largest = -heapq.heappop(heap)
+```
+
+### Common Mistakes
+
+- Forgetting that Python heaps are min-heaps.
+- Sorting the whole list when only top `k` is needed.
+- Letting the heap grow to size `n` when size `k` is enough.
+- Comparing complex objects without a stable tie-breaker.
+
+### Problems To Practise
+
+- Kth Largest Element in Array
+- Top K Frequent Elements
+- K Closest Points to Origin
+- Find Median from Data Stream
+- Merge K Sorted Lists
+
+### What To Say In An Interview
+
+"A heap fits because I repeatedly need the next best item. It avoids sorting everything when I only need the top few values."
+
+## Topic 10: Tries
+
+### Core Concepts
+
+A trie stores words as paths of characters. Each node has children, and each path can represent a prefix or a complete word.
+
+Use a trie when many words share prefixes.
+
+### Explain It Like I'm 12
+
+Think of a trie like a word tree. To store `"cat"`, walk `c -> a -> t`. To store `"car"`, reuse `c -> a`, then branch to `r`.
+
+### Tiny Example
+
+Words:
+
+```text
+cat
+car
+dog
+```
+
+`cat` and `car` share the path `c -> a`, so the trie stores that shared prefix once.
+
+### Code Patterns To Memorise
+
+Trie node:
+
+```python
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+```
+
+Insert:
+
+```python
+node = root
+for ch in word:
+    if ch not in node.children:
+        node.children[ch] = TrieNode()
+    node = node.children[ch]
+node.is_end = True
+```
+
+### Common Mistakes
+
+- Forgetting `is_end`, which means prefixes and full words get confused.
+- Creating a new branch when an existing prefix should be reused.
+- Not handling wildcard search with DFS.
+- Using a trie when a simple set is enough.
+
+### Problems To Practise
+
+- Implement Trie
+- Design Add and Search Words
+- Word Search II
+
+### What To Say In An Interview
+
+"A trie fits because the problem asks about prefixes or many dictionary words. Shared prefixes are stored once, and search follows character paths."
+
+## Topic 11: Dynamic Programming
+
+### Core Concepts
+
+Dynamic programming is for problems where the same smaller questions repeat. You save answers to those smaller questions so you do not recompute them.
+
+DP usually appears when the problem asks for:
+
+- The best value.
+- The number of ways.
+- Whether something is possible.
+
+### Explain It Like I'm 12
+
+Imagine climbing stairs. To reach step 5, you could come from step 4 or step 3. If you already know how many ways reach step 4 and step 3, you can add them instead of counting from the beginning again.
+
+### Tiny Example
+
+Climbing stairs:
+
+```text
+ways[1] = 1
+ways[2] = 2
+ways[3] = ways[2] + ways[1] = 3
+ways[4] = ways[3] + ways[2] = 5
+```
+
+Each answer uses earlier answers.
+
+### Code Patterns To Memorise
+
+1D DP:
+
+```python
+dp = [0] * (n + 1)
+dp[0] = base_value
+
+for i in range(1, n + 1):
+    # Combine earlier answers to build dp[i].
+    dp[i] = ...
+
+return dp[n]
+```
+
+Memoized recursion:
+
+```python
+from functools import lru_cache
+
+@lru_cache(None)
+def solve(i):
+    if i == base_case:
+        return base_value
+    return ...
+```
+
+### Common Mistakes
+
+- Starting with code before defining what `dp[i]` means.
+- Missing base cases.
+- Confusing subsequence with substring.
+- Using DP when greedy or two pointers would be simpler.
+- Returning the wrong DP cell.
+
+### Problems To Practise
+
+- Climbing Stairs
+- House Robber
+- Coin Change
+- Longest Increasing Subsequence
+- Unique Paths
+- Longest Common Subsequence
+- Word Break
+
+### What To Say In An Interview
+
+"This is DP because the problem asks for a best, count, or possible result, and the same smaller states repeat. I will first define what each DP state means, then write the transition."
+
+## Topic 12: Sorting and Intervals
+
+### Core Concepts
+
+Sorting puts data into an order that makes comparisons easier. After sorting, you can often compare neighbors, use two pointers, merge ranges, or process from smallest to largest.
+
+Intervals are ranges like `[start, end]`. Sorting by start time is usually the first step.
+
+### Explain It Like I'm 12
+
+If a messy pile of papers is hard to understand, sort it by date first. Once the papers are in order, overlaps and gaps are much easier to see.
+
+### Tiny Example
+
+Merge intervals:
+
+```python
+intervals = [[1, 3], [2, 6], [8, 10]]
+```
+
+`[1, 3]` and `[2, 6]` overlap because `2` starts before `3` ends. Merge them into `[1, 6]`. `[8, 10]` does not overlap, so it stays separate.
+
+### Code Patterns To Memorise
+
+Merge intervals:
+
+```python
+intervals.sort()
+merged = []
+
+for start, end in intervals:
+    if not merged or start > merged[-1][1]:
+        merged.append([start, end])
+    else:
+        merged[-1][1] = max(merged[-1][1], end)
+```
+
+Sort with key:
+
+```python
+items.sort(key=lambda x: x[0])
+```
+
+### Common Mistakes
+
+- Sorting by the wrong value.
+- Forgetting that sorting costs O(n log n).
+- Comparing every interval with every other interval after sorting.
+- Not deciding whether touching intervals count as overlapping.
+
+### Problems To Practise
+
+- Merge Intervals
+- Sort Colors
+- Implement Merge Sort
+- Implement Quicksort
+- Meeting Rooms style problems
+
+### What To Say In An Interview
+
+"Sorting gives structure. Once the input is ordered, I can compare neighbors or merge as I scan instead of checking every pair."
+
+## Topic 13: Big-O and Interview Communication
+
+### Core Concepts
+
+Big-O describes how runtime or memory grows as input grows. It does not measure exact seconds. It describes scaling.
+
+Common examples:
+
+- O(1): constant work.
+- O(log n): repeatedly cutting in half.
+- O(n): one full scan.
+- O(n log n): efficient sorting.
+- O(n^2): nested loops over the same input.
+
+### Explain It Like I'm 12
+
+If you have 10 toys to clean up, one pass means touching each toy once. If you compare every toy with every other toy, the work grows much faster.
+
+### Tiny Example
+
+One loop:
+
+```python
+for x in nums:
+    print(x)
+```
+
+This is O(n), because each item is touched once.
+
+Nested loop:
+
+```python
+for x in nums:
+    for y in nums:
+        print(x, y)
+```
+
+This is O(n^2), because each item is compared with every item.
+
+### Interview Explanation Template
+
+Use this order:
+
+1. Restate the problem in simple words.
+2. Ask clarifying questions.
+3. Walk through a small example.
+4. Explain the brute force approach.
+5. Improve it with a pattern.
+6. State time and space complexity.
+7. Code clearly.
+8. Test normal and edge cases.
+
+### Common Mistakes
+
+- Forgetting to mention space complexity.
+- Saying hash maps are always O(1) without saying average case.
+- Ignoring sorting cost.
+- Coding silently in a live interview.
+- Not testing empty input, single item, duplicates, and boundary cases.
+
+### What To Say In An Interview
+
+"The brute force solution is useful as a starting point. Then I will improve the slow part by using the pattern that fits the problem clues."
+
+## Compact Pattern Reference
 
 ## How to Memorise DSA Patterns
 
