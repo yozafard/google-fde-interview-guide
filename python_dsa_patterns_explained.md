@@ -100,6 +100,15 @@ counts = Counter(s)
 
 "The brute force way compares each item with many other items. I can avoid that by storing useful information as I scan. The hash map or set lets me answer the lookup question in constant time on average."
 
+### Interview Drillbook
+
+- **Pattern trigger:** The problem asks whether you have seen something before, needs counts, needs indexes by value, or compares groups of characters/items.
+- **Core invariant:** After processing position `i`, your map or set accurately describes the useful information from positions before `i`.
+- **What to say first:** "The brute force bottleneck is repeated lookup. I can trade memory for speed by storing what I have already scanned."
+- **Edge cases to test:** Empty input, one element, duplicates, negative numbers, repeated characters, and values that collide logically such as anagrams.
+- **Common trap:** Storing too much information. For membership, a set is enough; for counts, use `Counter`; for indexes, use a dictionary.
+- **Follow-up direction:** Be ready to explain average-case O(1), why hash maps use extra O(n) space, and how the answer changes if input arrives as a stream.
+
 ## Topic 2: Two Pointers
 
 ### Core Concepts
@@ -174,6 +183,15 @@ return write
 ### What To Say In An Interview
 
 "I am using two pointers because the input order gives me information. Each move removes options that cannot produce a better answer, so I do not need to check every pair."
+
+### Interview Drillbook
+
+- **Pattern trigger:** The input is sorted, you need a pair, you compare from both ends, or you need to modify an array in place.
+- **Core invariant:** Every pointer move permanently eliminates a set of candidates that cannot be part of the answer.
+- **What to say first:** "Because the data has order, I can move the pointer that is preventing progress instead of checking every pair."
+- **Edge cases to test:** Empty array, one item, all duplicates, no valid pair, pair at the edges, and even/odd length strings.
+- **Common trap:** Moving both pointers at once when only one side has been proven impossible.
+- **Follow-up direction:** Be ready to handle duplicate skipping, returning all pairs/triplets, or switching to a hash map when the input is not sorted.
 
 ## Topic 3: Sliding Window
 
@@ -266,6 +284,15 @@ for right, ch in enumerate(s):
 
 "The answer is a contiguous part of the input, so I will keep a window. I expand with the right pointer, and whenever the window breaks the rule, I move the left pointer until it is valid again."
 
+### Interview Drillbook
+
+- **Pattern trigger:** The answer is a contiguous subarray or substring, especially longest, shortest, max sum, at most `k`, or contains all required characters.
+- **Core invariant:** At the end of each iteration, the window either satisfies the rule or has been shrunk until it is ready to become valid again.
+- **What to say first:** "I only care about contiguous ranges, so I can maintain one moving range instead of recomputing each candidate range."
+- **Edge cases to test:** Empty string, all same characters, all unique characters, `k = 0`, window equal to the whole input, and no valid window.
+- **Common trap:** Updating the answer before the window is valid, or shrinking only once when a `while` loop is needed.
+- **Follow-up direction:** Be ready to distinguish fixed-size windows from variable-size windows and explain why each pointer moves at most `n` times.
+
 ## Topic 4: Stack and Queue
 
 ### Core Concepts
@@ -342,6 +369,15 @@ while queue:
 ### What To Say In An Interview
 
 "A stack fits because I need to resolve the most recent open item first. A queue fits because I need to process items in arrival order or level order."
+
+### Interview Drillbook
+
+- **Pattern trigger:** Use a stack for nested structure, undo behavior, monotonic next-greater/next-smaller questions, or expression evaluation. Use a queue for level order, shortest unweighted paths, or arrival order.
+- **Core invariant:** The stack keeps unresolved items in the order they must be resolved; the queue keeps pending work in the order it must be processed.
+- **What to say first:** "The problem has an order-of-resolution requirement. I will choose stack for most-recent-first or queue for oldest-first."
+- **Edge cases to test:** Empty stack/queue, unmatched delimiters, duplicate temperatures/prices, single level trees, and cyclic graph inputs for BFS.
+- **Common trap:** Using `list.pop(0)` for queue behavior instead of `collections.deque`.
+- **Follow-up direction:** Be ready to explain monotonic stacks and why each item is pushed and popped at most once.
 
 ## Topic 5: Binary Search
 
@@ -422,6 +458,15 @@ return left
 
 "I can binary search because the search space is ordered. At each midpoint, the result tells me which half cannot contain the answer."
 
+### Interview Drillbook
+
+- **Pattern trigger:** The input is sorted, the answer is a boundary, or a candidate value has a monotonic yes/no condition.
+- **Core invariant:** The true answer is always inside the current `[left, right]` or `[left, right)` search space, depending on the template.
+- **What to say first:** "I need to define the monotonic condition before coding. Once I know what `works(mid)` means, the pointer movement follows."
+- **Edge cases to test:** Empty input, target below/above range, first element, last element, duplicates, and two-element ranges.
+- **Common trap:** Mixing inclusive and exclusive bounds in the same implementation.
+- **Follow-up direction:** Be ready to search rotated arrays, find first/last occurrence, or binary search the answer rather than an array index.
+
 ## Topic 6: Linked Lists
 
 ### Core Concepts
@@ -490,6 +535,15 @@ while fast and fast.next:
 ### What To Say In An Interview
 
 "Because this is a linked list, I cannot rely on indexes. I will move node references carefully and save the next node before changing any pointer."
+
+### Interview Drillbook
+
+- **Pattern trigger:** The problem involves node references, cycles, reversing, merging, removing nodes, or finding a middle/end-relative node.
+- **Core invariant:** Before changing any `.next`, you still have a reference to every node you need later.
+- **What to say first:** "Pointer safety matters here. I will save the next node before rewiring links, and I may use a dummy node to simplify head changes."
+- **Edge cases to test:** Empty list, one node, two nodes, removing the head, cycle at the head, and odd/even length lists.
+- **Common trap:** Losing the rest of the list by overwriting `curr.next` too early.
+- **Follow-up direction:** Be ready to justify dummy nodes, fast/slow pointers, and O(1) space reversal.
 
 ## Topic 7: Trees
 
@@ -570,6 +624,15 @@ while queue:
 
 "This is a tree problem, so I will define what each node returns to its parent. Once that return value is clear, the recursion becomes much easier."
 
+### Interview Drillbook
+
+- **Pattern trigger:** The problem asks about depth, path, ancestor, subtree equality, validation, level order, or combining information from children.
+- **Core invariant:** Each recursive call correctly solves the same question for its subtree and returns exactly the information the parent needs.
+- **What to say first:** "I will define the return value for one node. Then the whole tree solution is just combining left and right child results."
+- **Edge cases to test:** Empty tree, single node, skewed tree, duplicate values, invalid BST boundary cases, and answer entirely in one subtree.
+- **Common trap:** Assuming a binary tree is a BST, or using local parent-child checks when the problem needs global min/max boundaries.
+- **Follow-up direction:** Be ready to switch between DFS recursion, iterative stack traversal, and BFS level order.
+
 ## Topic 8: Graphs
 
 ### Core Concepts
@@ -647,6 +710,15 @@ while queue:
 
 "This is a graph because the problem is about connections. I need to define the neighbors and track visited nodes so I do not repeat work or loop forever."
 
+### Interview Drillbook
+
+- **Pattern trigger:** The problem mentions connections, routes, dependencies, components, grids with movement, transformations, or shortest unweighted paths.
+- **Core invariant:** Every visited node has already been scheduled or processed once, so cycles cannot cause repeated work.
+- **What to say first:** "First I will define the graph representation and neighbor function. Then I will choose BFS, DFS, topological sort, or union find based on the question."
+- **Edge cases to test:** Disconnected graph, cycle, self-loop, empty graph, one node, blocked grid, and unreachable target.
+- **Common trap:** Starting traversal from only one node when the graph can have multiple components.
+- **Follow-up direction:** Be ready to explain BFS for shortest path, DFS for reachability/components, topological sort for prerequisites, and union find for dynamic connectivity.
+
 ## Topic 9: Heaps and Priority Queues
 
 ### Core Concepts
@@ -704,6 +776,15 @@ largest = -heapq.heappop(heap)
 ### What To Say In An Interview
 
 "A heap fits because I repeatedly need the next best item. It avoids sorting everything when I only need the top few values."
+
+### Interview Drillbook
+
+- **Pattern trigger:** The problem asks for top `k`, kth largest/smallest, closest items, merging sorted streams, scheduling by priority, or continuously retrieving the next best item.
+- **Core invariant:** The heap contains only the candidates needed to answer the next priority decision.
+- **What to say first:** "Sorting everything is stronger than I need. A heap maintains just enough order to repeatedly extract the next smallest or largest."
+- **Edge cases to test:** `k = 0`, `k = 1`, `k = n`, duplicates, negative values, equal priorities, and fewer than `k` inputs.
+- **Common trap:** Building a heap of all `n` elements when a size-`k` heap gives better space usage.
+- **Follow-up direction:** Be ready to add tie-breakers, use two heaps for medians, or compare heap O(n log k) with sorting O(n log n).
 
 ## Topic 10: Tries
 
@@ -767,6 +848,15 @@ node.is_end = True
 ### What To Say In An Interview
 
 "A trie fits because the problem asks about prefixes or many dictionary words. Shared prefixes are stored once, and search follows character paths."
+
+### Interview Drillbook
+
+- **Pattern trigger:** The problem asks for prefix search, autocomplete, wildcard word matching, dictionary lookup during DFS, or many words sharing prefixes.
+- **Core invariant:** Each node represents the prefix formed by the path from the root to that node.
+- **What to say first:** "A set can check full words, but a trie can stop early on prefixes and share common prefix work across many words."
+- **Edge cases to test:** Empty word, word that is only a prefix of another word, duplicate insert, missing character, and wildcard at the beginning or end.
+- **Common trap:** Forgetting `is_end`, which makes `app` look like a full word just because `apple` exists.
+- **Follow-up direction:** Be ready to combine trie traversal with board DFS and explain pruning when the current prefix is not in the trie.
 
 ## Topic 11: Dynamic Programming
 
@@ -846,6 +936,15 @@ def solve(i):
 
 "This is DP because the problem asks for a best, count, or possible result, and the same smaller states repeat. I will first define what each DP state means, then write the transition."
 
+### Interview Drillbook
+
+- **Pattern trigger:** The problem asks for maximum/minimum, number of ways, whether something is possible, or decisions over prefixes, indexes, capacities, or previous choices.
+- **Core invariant:** Each DP entry has one precise meaning and is computed only from smaller or previously solved states.
+- **What to say first:** "I will define the state in English first. Then I will describe the transition, base case, fill order, and final cell."
+- **Edge cases to test:** Empty input, zero amount/capacity, impossible target, one item, repeated values, and off-by-one string prefixes.
+- **Common trap:** Writing a table before defining what `dp[i]` or `dp[i][j]` means.
+- **Follow-up direction:** Be ready to discuss memoization versus tabulation, 2D-to-1D space optimization, and reconstructing the chosen path.
+
 ## Topic 12: Sorting and Intervals
 
 ### Core Concepts
@@ -907,6 +1006,15 @@ items.sort(key=lambda x: x[0])
 ### What To Say In An Interview
 
 "Sorting gives structure. Once the input is ordered, I can compare neighbors or merge as I scan instead of checking every pair."
+
+### Interview Drillbook
+
+- **Pattern trigger:** The problem asks about overlaps, ordering, closest pairs, scheduling, duplicates, or comparing neighboring items after arrangement.
+- **Core invariant:** After sorting, all future intervals/items appear in a predictable order, so local comparisons are enough for many global questions.
+- **What to say first:** "I will sort to expose structure. The O(n log n) cost is worth it if it avoids an O(n^2) pairwise comparison."
+- **Edge cases to test:** Empty list, one interval, touching intervals, nested intervals, same start time, same end time, and already sorted input.
+- **Common trap:** Sorting by the wrong key, especially end time versus start time in scheduling problems.
+- **Follow-up direction:** Be ready to explain when greedy sorting by end time is better than sorting by start time.
 
 ## Topic 13: Big-O and Interview Communication
 
@@ -971,6 +1079,15 @@ Use this order:
 ### What To Say In An Interview
 
 "The brute force solution is useful as a starting point. Then I will improve the slow part by using the pattern that fits the problem clues."
+
+### Interview Drillbook
+
+- **Pattern trigger:** Every interview problem needs complexity analysis and narration, even when the algorithm feels obvious.
+- **Core invariant:** Your explanation should keep the interviewer aligned on the problem, the chosen approach, and the trade-off you are making.
+- **What to say first:** "I will start with the simple solution to confirm the logic, then optimize the bottleneck."
+- **Edge cases to test:** Empty input, one item, duplicates, negative values, max/min boundaries, and cases where no answer exists.
+- **Common trap:** Giving only runtime and forgetting extra memory from maps, sets, recursion stack, heaps, queues, or DP tables.
+- **Follow-up direction:** Be ready to compare two valid approaches and explain why one is better under the given constraints.
 
 ## Compact Pattern Reference
 
@@ -1527,6 +1644,26 @@ Use this memory hook:
 
 In a live interview, saying your thoughts out loud matters almost as much as writing correct code. The interviewer is evaluating how you reason, not just whether you remember a template.
 
+## Interview Reflex Cards
+
+Use these cards for fast review before a mock interview. Each card tells you how to start, what to keep repeating, and what to test.
+
+| Pattern | Start With | Keep Saying | Test |
+|---|---|---|---|
+| Hash map / set | "What lookup am I repeating?" | "The map contains facts from items I already scanned." | Duplicates, missing target, empty input |
+| Two pointers | "What does order let me eliminate?" | "This pointer move discards impossible candidates." | Pair at edges, no pair, duplicates |
+| Sliding window | "Is the answer contiguous?" | "Expand right, shrink left until valid." | Whole input window, no valid window, `k = 0` |
+| Stack / queue | "What order must unresolved work follow?" | "Stack resolves newest first; queue resolves oldest first." | Empty structure, unmatched items, one level |
+| Binary search | "What is the monotonic yes/no question?" | "The answer remains inside the search bounds." | First/last item, duplicates, two items |
+| Linked list | "Which references can I lose?" | "Save next before rewiring." | Empty list, one node, removing head |
+| Tree | "What should each node return?" | "Combine left and right child answers." | Empty tree, skewed tree, duplicate values |
+| Graph | "What are the neighbors?" | "Visited prevents repeated work and cycles." | Disconnected graph, cycle, unreachable target |
+| Heap | "Do I need every item sorted or only the next best?" | "The heap stores the current priority candidates." | `k = 1`, `k = n`, equal priorities |
+| DP | "What state am I solving once?" | "Each state depends on smaller solved states." | Empty input, impossible target, off-by-one prefix |
+| Sorting / intervals | "What structure does sorting reveal?" | "After sorting, local comparisons become meaningful." | Touching intervals, nested intervals, same start |
+| Trie | "Do prefixes matter?" | "Each node is a prefix path." | Prefix-only word, duplicate word, missing branch |
+| Big-O / communication | "What is the bottleneck?" | "I am trading time, space, or complexity." | Boundary cases and memory cost |
+
 ## Quick Pattern Recognition Table
 
 | Problem clue | Likely pattern |
@@ -1555,6 +1692,34 @@ For each pattern:
 5. Write down the trigger words that made the pattern obvious.
 
 The goal is not to memorise every problem. The goal is to recognise the pattern quickly and explain why it fits.
+
+### Drill Routine
+
+Use this when time is short and you need interview fluency, not passive reading.
+
+**One-day prep routine:**
+
+- 10 minutes: scan the pattern trigger table and say one example problem for each pattern.
+- 25 minutes: solve one medium problem out loud without looking at notes.
+- 10 minutes: write the invariant, edge cases, and complexity from memory.
+- 10 minutes: compare your solution with the reference and identify the first wrong turn.
+- 5 minutes: rehearse a clean explanation as if speaking to the interviewer.
+
+**Weekly prep routine:**
+
+- Day 1: hash maps, two pointers, and sliding window.
+- Day 2: stack, queue, binary search, and linked lists.
+- Day 3: trees and graphs.
+- Day 4: heaps, sorting, intervals, and tries.
+- Day 5: dynamic programming.
+- Day 6: two timed mixed-topic mocks.
+- Day 7: redo missed problems and rehearse explanations.
+
+**After every problem, write three lines:**
+
+- Pattern: the clue that revealed the approach.
+- Invariant: what stayed true while the algorithm ran.
+- Trap: the bug or edge case most likely to break the solution.
 
 ## Best Solutions for `dsa_problem_set.md`
 
