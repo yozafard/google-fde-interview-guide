@@ -386,6 +386,8 @@ def nightly_eval_pipeline():
 
 # QUESTIONS THEY MIGHT ASK
 
+## Quick-Fire (one-liners)
+
 1. "How would you handle an agent that keeps looping?"
    → Circuit breakers, iteration limits, loop detection
 
@@ -400,6 +402,78 @@ def nightly_eval_pipeline():
 
 5. "How do you manage costs at scale?"
    → Token budgets per session, caching frequent queries, smaller models for simple tasks
+
+---
+
+## Deep-Dive (full answers)
+
+### 6. "Walk me through how you'd debug an agent that gives a wrong answer."
+> "First I make it reproducible — capture the exact input, the full trace, and the seed/temperature.
+> Then I look at the trace as a pipeline and isolate the failing stage: Was retrieval wrong (bad
+> chunks)? Was the prompt wrong (missing context)? Was the tool call malformed? Or did the model
+> reason poorly over correct inputs? Each has a different fix — re-ranking and better chunking for
+> retrieval, schema enforcement for tool calls, few-shot examples or a stronger model for reasoning.
+> The key is that observability (LangSmith, tracing every step) lets me localize the failure instead
+> of guessing. I treat it like any production bug: reproduce, isolate, fix, add a regression test to
+> the golden set."
+
+### 7. "How do you decide between a single large prompt vs. a multi-agent system?"
+> "Start simple. A single prompt with tools handles most tasks and is far easier to debug, cheaper,
+> and lower-latency. I only reach for multi-agent when there's a real need: distinct skill domains
+> that benefit from separate system prompts, parallelizable subtasks, or context that's too large to
+> share. Multi-agent adds coordination overhead, more failure modes, and higher cost — so the bar is
+> 'does decomposition measurably improve quality or latency?' Premature multi-agent design is the
+> agentic equivalent of premature microservices."
+
+### 8. "How do you handle prompt injection and untrusted tool output?"
+> "I treat all retrieved content and tool outputs as untrusted data, never as instructions. Concretely:
+> keep system instructions separate from user/tool content, never concatenate raw documents into the
+> instruction layer, and use structured boundaries so the model knows 'this is data to analyze, not
+> commands to follow.' For high-risk tools (sending email, executing code, DB writes), I gate behind
+> allowlists and human approval regardless of what the model 'decided.' I also sanitize and validate
+> tool outputs before they re-enter context. The principle: the model's privileges should never escalate
+> just because some text told it to."
+
+### 9. "Your RAG system retrieves the right docs but the answer is still wrong. What's happening?"
+> "That's a generation problem, not a retrieval problem — good signal that the bottleneck is downstream.
+> Common causes: the context is there but buried (lost-in-the-middle — reorder so key chunks are at the
+> start/end), the chunks are too fragmented to reason over (increase chunk size or add overlap), the
+> prompt doesn't instruct the model to ground its answer and cite, or the model is too weak. I'd add an
+> instruction to answer *only* from context and say 'I don't know' otherwise, require inline citations so
+> I can verify grounding, and measure faithfulness with RAGAS. If it still fails, it's a model capability
+> issue — upgrade the model for that step."
+
+### 10. "How would you reduce latency in an agent that feels too slow?"
+> "I profile first to find where the time goes — usually it's sequential LLM calls and tool round-trips.
+> Levers, roughly in order: (1) parallelize independent tool calls and retrievals instead of running them
+> serially; (2) stream tokens so the user sees output immediately even if the full answer takes longer;
+> (3) use a smaller/faster model for routing and simple steps, reserving the big model for hard reasoning
+> (model cascading); (4) cache embeddings and frequent query results; (5) cut unnecessary agent loops with
+> tighter prompts. Perceived latency matters as much as actual — streaming a partial answer in 500ms beats
+> a complete answer in 5s with a blank screen."
+
+### 11. "How do you measure success for an agentic feature with no single 'correct' answer?"
+> "I decompose subjective quality into measurable proxies and combine offline and online signals. Offline:
+> LLM-as-judge scoring on rubric dimensions (relevance, faithfulness, completeness), plus a golden set with
+> human-labeled references. Online: task completion rate, follow-up/clarification rate (high = confusing),
+> thumbs up/down, and escalation-to-human rate. No single metric is trustworthy, so I triangulate. And I
+> always keep a small human-eval loop to calibrate that the LLM judge correlates with real user judgment —
+> otherwise you optimize a judge that's drifted from reality."
+
+### 12. "A customer says the agent 'works in the demo but fails in production.' How do you approach it?"
+> "This is the FDE core problem — the gap is almost always distribution shift between demo inputs and real
+> ones. I'd instrument production to capture real failing traces, then cluster them: are they edge-case
+> intents the demo never covered, longer/messier inputs, missing data in their actual systems, or latency/
+> timeout issues under real load? Demos are curated; production is adversarial and long-tailed. I'd build a
+> golden set *from real production failures*, not synthetic cases, and iterate against that. The fix is
+> usually expanding coverage and hardening guardrails, not changing the core model."
+
+### 13. "How do you keep an agent's behavior stable when you change the prompt or model?"
+> "Version everything — prompts, model IDs, and tool schemas are config, not loose strings. Before any
+> change ships, it runs against the full golden set and I diff the metrics; a regression beyond threshold
+> blocks the change. For model upgrades I A/B test on live traffic with a fraction of users before full
+> rollout. The mindset is that prompts and models are dependencies like any library — you don't upgrade
+> them in production without a regression suite and a rollback path."
 
 ---
 
